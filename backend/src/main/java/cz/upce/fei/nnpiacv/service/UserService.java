@@ -33,7 +33,7 @@ public class UserService {
 
     public User findUser(Long id) {
         User user = users.get(id);
-        log.info("Ziskan uzivatel" + user.toString());
+        log.info("Ziskan uzivatel " + user.toString());
 
         return user;
     }
