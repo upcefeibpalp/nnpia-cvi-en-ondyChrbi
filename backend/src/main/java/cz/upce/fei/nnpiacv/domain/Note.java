@@ -2,21 +2,23 @@ package cz.upce.fei.nnpiacv.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "note")
 public class Note {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
+    @NonNull
     private String text;
     @ManyToOne
     @JsonIgnore
+    @NonNull
     private User user;
 }

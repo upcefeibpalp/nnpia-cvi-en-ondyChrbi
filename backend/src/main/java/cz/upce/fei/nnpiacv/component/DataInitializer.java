@@ -18,10 +18,10 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User user = new User(0L, "admin@upce.cz", "ABC123");
-        Note note = new Note(0L, "Hello world", user);
+        User user = new User("admin@upce.cz", "ABC123");
+        Note note = new Note("Hello world", user);
 
-        if (!userRepository.existsById(user.getId())) {
+        if (!userRepository.existsByEmail(user.getEmail())) {
             log.debug("Admin user created " + user);
             userRepository.save(user);
             noteRepository.save(note);

@@ -1,6 +1,6 @@
 package cz.upce.fei.nnpiacv.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,14 +13,21 @@ import java.util.List;
 @Table(name = "app_user")
 public class User {
     @Id
-    @NonNull
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(unique = true)
     @NonNull
     private String email;
     @NonNull
     private String password;
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Note> notes;
+
+    public UserResponseDto toResponseDto() {
+        return UserResponseDto.builder()
+                .id(getId())
+                .email(getEmail())
+                .password(getPassword())
+                .build();
+    }
 }
