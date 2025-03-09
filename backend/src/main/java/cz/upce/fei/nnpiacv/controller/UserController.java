@@ -4,6 +4,7 @@ import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.dto.UserRequestDto;
 import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.service.UserService;
+import cz.upce.fei.nnpiacv.service.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findUser(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<?> findUser(@PathVariable(name = "id") Long id) throws UserNotFoundException {
         User user = userService.findUser(id);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -84,5 +85,10 @@ public class UserController {
         userService.deleteUser(id);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 }
