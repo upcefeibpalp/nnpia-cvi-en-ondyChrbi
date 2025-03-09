@@ -1,38 +1,88 @@
 package cz.upce.fei.nnpiacv.controller;
 
 import cz.upce.fei.nnpiacv.domain.User;
+import cz.upce.fei.nnpiacv.dto.UserRequestDto;
+import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/users")
-    public Collection<User> findUsers(@RequestParam(required = false) String email) {
+    @GetMapping("")
+    public ResponseEntity<?> findUsers(@RequestParam(required = false) String email) {
         if (email == null) {
-            return userService.findUsers();
+            Collection<UserResponseDto> users = userService.findUsers()
+                    .stream().map(User::toDto)
+                    .toList();
+
+            return ResponseEntity.status(HttpStatus.OK).body(users);
         } else {
             User user = userService.findByEmail(email);
 
             if (user == null) {
-                return Collections.emptyList();
+                return ResponseEntity.ok(Collections.emptyList());
             } else {
-                return Collections.singletonList(user);
+                return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonList(
+                    user.toDto()
+                ));
             }
         }
     }
 
-    @GetMapping("/users/{id}")
-    public User findUser(@PathVariable(name = "id") Long id) {
-        return userService.findUser(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findUser(@PathVariable(name = "id") Long id) {
+        User user = userService.findUser(id);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(user.toDto());
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> createUser(@RequestBody UserRequestDto user) {
+        log.info("Request for creating new user obtained {}", user);
+
+        User createdUser = userService.createUser(User.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createdUser.toDto());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable(name = "id") Long id, @RequestBody UserRequestDto user) {
+        log.info("Request for updating user obtained with id {}", id);
+
+        User updatedUser = userService.updateUser(id, User.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(updatedUser.toDto());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "id") Long id) {
+        log.info("Request for deleting user obtained with id {}", id);
+
+        userService.deleteUser(id);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

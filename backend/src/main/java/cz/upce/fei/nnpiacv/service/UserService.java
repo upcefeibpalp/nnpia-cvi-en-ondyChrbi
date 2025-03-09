@@ -28,4 +28,26 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public User updateUser(Long id, User user) {
+        Optional<User> existingUser = userRepository.findById(id);
+
+        if (existingUser.isEmpty()) {
+            return null;
+        }
+
+        User updatedUser = existingUser.get();
+        updatedUser.setEmail(user.getEmail());
+        updatedUser.setPassword(user.getPassword());
+
+        return userRepository.save(updatedUser);
+    }
 }

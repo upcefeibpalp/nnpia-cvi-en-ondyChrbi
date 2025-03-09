@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "note")
 public class Note {
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column
     private String text;
     @ManyToOne
