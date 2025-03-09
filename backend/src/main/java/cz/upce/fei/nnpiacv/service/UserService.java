@@ -2,6 +2,7 @@ package cz.upce.fei.nnpiacv.service;
 
 import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.repository.UserRepository;
+import cz.upce.fei.nnpiacv.service.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findUser(Long id) {
+    public User findUser(Long id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
         log.debug("Ziskan uzivatel " + user.orElse(null));
+
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(id);
+        }
 
         return user.orElse(null);
     }
