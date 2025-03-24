@@ -13,8 +13,6 @@ import lombok.*;
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     @NonNull

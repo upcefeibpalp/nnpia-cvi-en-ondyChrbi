@@ -26,7 +26,7 @@ public class DataInitializer implements CommandLineRunner {
             log.debug("Admin user created " + user);
             user = userRepository.save(user);
 
-            Note note = new Note(null, "Hello world", user);
+            Note note = new Note("Hello world", user);
             noteRepository.save(note);
         }
     }

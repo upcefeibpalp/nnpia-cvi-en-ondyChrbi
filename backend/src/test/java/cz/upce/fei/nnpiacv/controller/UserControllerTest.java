@@ -74,10 +74,10 @@ class UserControllerTest {
     }
 
     @Test
-    void givenExistingEmail_whenCreateUser_thenStatus409() throws Exception, UserAlreadyExistsException {
+    void givenExistingEmail_whenCreateUser_thenStatus409() throws Exception {
         String userJson = """
                 {
-                    "email": ""test@test.com",
+                    "email": "test@test.com",
                     "password": "password123"
                 }
                 """;
