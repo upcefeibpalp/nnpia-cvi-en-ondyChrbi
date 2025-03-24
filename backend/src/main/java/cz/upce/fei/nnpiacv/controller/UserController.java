@@ -2,6 +2,7 @@ package cz.upce.fei.nnpiacv.controller;
 
 import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.dto.UserRequestDto;
+import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,22 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<User> findUsers(@RequestParam(required = false) String email) {
+    public ResponseEntity<?> findUsers(@RequestParam(required = false) String email) {
         if (email == null) {
-            return userService.findUsers();
+            Collection<UserResponseDto> users = userService.findUsers()
+                    .stream().map(User::toResponseDto)
+                    .toList();
+
+            return ResponseEntity.status(HttpStatus.OK).body(users);
         } else {
             User user = userService.findByEmail(email);
 
             if (user == null) {
-                return Collections.emptyList();
+                return ResponseEntity.ok(Collections.emptyList());
             } else {
-                return Collections.singletonList(user);
+                return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonList(
+                    user.toResponseDto()
+                ));
             }
         }
     }
