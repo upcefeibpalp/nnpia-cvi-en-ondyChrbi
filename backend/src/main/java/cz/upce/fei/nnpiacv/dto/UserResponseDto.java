@@ -13,4 +13,5 @@ public class UserResponseDto {
     private long id;
     private String email;
     private String password;
+    private Boolean active;
 }

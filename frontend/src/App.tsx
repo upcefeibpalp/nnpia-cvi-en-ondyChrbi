@@ -1,17 +1,24 @@
 import './App.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ChakraProvider} from "@chakra-ui/react";
 import defaultSystem from "./system/system.ts";
 import UserTable from "./components/user/UserTable.tsx";
+import axios from "axios";
 
 function App() {
-    const [users] = useState(
-        [
-            {id: 1, email: "rhaneyra@email.com", active: false},
-            {id: 2, email: "ageon@email.com", active: true},
-            {id: 3, email: "denerys@email.com", active: false}
-        ]
-    );
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('http://localhost:9000/api/v1/users');
+            const users = response.data;
+            console.debug(users);
+
+            setUsers(users);
+        }
+
+        fetchData();
+    }, [setUsers]);
 
     return (
         <ChakraProvider value={defaultSystem}>

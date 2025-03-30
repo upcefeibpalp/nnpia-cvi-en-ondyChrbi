@@ -3,7 +3,7 @@ import UserTableRow from "./UserTableRow.tsx";
 import {User} from "../../types/User.ts";
 
 interface UserTableProps {
-    users: User[];
+    users: User[]
 }
 
 const UserTable = ({users} : UserTableProps) => {

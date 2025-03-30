@@ -4,6 +4,7 @@ import cz.upce.fei.nnpiacv.domain.User;
 import cz.upce.fei.nnpiacv.dto.UserRequestDto;
 import cz.upce.fei.nnpiacv.dto.UserResponseDto;
 import cz.upce.fei.nnpiacv.service.UserService;
+import cz.upce.fei.nnpiacv.service.exception.UserActiveStateException;
 import cz.upce.fei.nnpiacv.service.exception.UserAlreadyExistsException;
 import cz.upce.fei.nnpiacv.service.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
@@ -15,15 +16,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Collections;
 
-@RestController
 @AllArgsConstructor
 @Slf4j
+@RestController
 @RequestMapping("/api/v1/users")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> findUsers(@RequestParam(required = false) String email) {
+    public ResponseEntity<?> findUsers(@RequestParam(required = false, name = "email") String email) {
         if (email == null) {
             Collection<UserResponseDto> users = userService.findUsers()
                     .stream().map(User::toResponseDto)
@@ -57,11 +59,38 @@ public class UserController {
                 .body(createdUser.toResponseDto());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@RequestBody UserRequestDto userRequestBody, @PathVariable Long id) {
+        log.info("Request for updating user with id {} obtained...", id);
+
+        User updatedUser = userService.updateUser(id, userRequestBody.toUser());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(updatedUser.toResponseDto());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         log.info("Request for deleting user with id {} obtained...", id);
 
         userService.deleteUser(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<?> activateUser(@PathVariable Long id) throws UserNotFoundException, UserActiveStateException {
+        log.info("Request for activating user with id {} obtained...", id);
+
+        userService.activateUser(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/deactivate")
+    public ResponseEntity<?> deactivateUser(@PathVariable Long id) throws UserNotFoundException, UserActiveStateException {
+        log.info("Request for deactivating user with id {} obtained...", id);
+
+        userService.deactivateUser(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -73,6 +102,11 @@ public class UserController {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserActiveStateException.class)
+    public ResponseEntity<?> handleUserActiveStateException(UserActiveStateException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }

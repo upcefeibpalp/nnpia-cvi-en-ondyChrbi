@@ -22,6 +22,9 @@ public class User {
     private String email;
     @NonNull
     private String password;
+    @NonNull
+    @Column(columnDefinition = "boolean default true")
+    private Boolean active = true;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Note> notes;
 
@@ -30,6 +33,17 @@ public class User {
                 .id(getId())
                 .email(getEmail())
                 .password(getPassword())
+                .active(getActive())
                 .build();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", active=" + active +
+                '}';
     }
 }
