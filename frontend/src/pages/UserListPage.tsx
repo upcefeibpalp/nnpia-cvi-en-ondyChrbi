@@ -1,11 +1,9 @@
-import './App.css';
+import '../App.css';
 import {useEffect, useState} from "react";
-import {ChakraProvider} from "@chakra-ui/react";
-import defaultSystem from "./system/system.ts";
-import UserTable from "./components/user/UserTable.tsx";
+import UserTable from "../components/user/UserTable.tsx";
 import axios from "axios";
 
-function App() {
+function UserListPage() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -21,11 +19,11 @@ function App() {
     }, [setUsers]);
 
     return (
-        <ChakraProvider value={defaultSystem}>
+        <>
             <h1>Users</h1>
             <UserTable users={users}/>
-        </ChakraProvider>
+        </>
     )
 }
 
-export default App
+export default UserListPage
