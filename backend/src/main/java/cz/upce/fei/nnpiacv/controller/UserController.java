@@ -47,7 +47,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User findUser(@PathVariable(name = "id") Long id) throws UserNotFoundException {
-        return userService.findUser(id);
+        return userService.findUserByEmailAndPassword(id);
     }
 
     @PostMapping
