@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import AuthenticationButton from "../components/authentication/AuthenticationButton.tsx";
 
 export const Route = createRootRoute({
     component: () => (
@@ -11,9 +12,7 @@ export const Route = createRootRoute({
                 <Link to="/users">
                     Users
                 </Link>
-                <Link to="/users/register">
-                    User registration
-                </Link>
+                <AuthenticationButton />
             </div>
             <hr />
             <Outlet />

@@ -11,7 +11,7 @@ const UserTableRow = ({data}: UserProps) => {
     const [activeState, setActiveState] = useState<boolean>(data.active || false);
 
     const changeActiveState = async (userId: number, activate: boolean) => {
-        const response = await axios.post(`http://localhost:9000/api/v1/users/${userId}/${(activate) ? "activate" : "deactivate"}`);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/users/${userId}/${(activate) ? "activate" : "deactivate"}`);
 
         if (response.status === 204) {
             setActiveState(activate);

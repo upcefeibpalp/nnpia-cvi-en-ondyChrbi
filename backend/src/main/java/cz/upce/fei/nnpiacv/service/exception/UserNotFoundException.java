@@ -7,4 +7,8 @@ public class UserNotFoundException extends Throwable {
     public UserNotFoundException(Long id) {
         log.error("User with id {} not found", id, this);
     }
+
+    public UserNotFoundException(String email) {
+        log.error("User with email {} not found", email, this);
+    }
 }

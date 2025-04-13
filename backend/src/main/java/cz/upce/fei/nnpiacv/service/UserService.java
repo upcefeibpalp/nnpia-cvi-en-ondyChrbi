@@ -23,7 +23,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findUser(Long id) throws UserNotFoundException {
+    public User findUserByEmailAndPassword(Long id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
         log.debug("Ziskan uzivatel " + user.orElse(null));
 
@@ -94,5 +94,17 @@ public class UserService {
         } else {
             throw new UserNotFoundException(id);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public User findUserByEmailAndPassword(String email, String password) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByEmailAndPassword(email, password);
+        log.debug("Ziskan uzivatel " + user.orElse(null));
+
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(email);
+        }
+
+        return user.orElse(null);
     }
 }
