@@ -8,7 +8,7 @@ function UserListPage() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/users`);
+            const response = await axios.get(`http://localhost:9000/api/v1/users`);
             const users = response.data;
             console.debug(users);
 

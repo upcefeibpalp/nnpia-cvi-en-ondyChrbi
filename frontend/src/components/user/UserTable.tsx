@@ -8,7 +8,7 @@ interface UserTableProps {
 
 const UserTable = ({users} : UserTableProps) => {
     return (
-        <Table.Root bg={{base: "dark"}}>
+        <Table.Root bg={{base: "dark"}} data-testid="user-table">
             <Table.Header>
                 <Table.Row>
                     <Table.ColumnHeader>ID</Table.ColumnHeader>
